@@ -1,0 +1,15 @@
+
+
+1.到dbjson 資料夾恢復成以下
+
+{
+  "orders": [],
+  "contacts": []
+}
+
+
+2.儲存後 
+到C:\Users\saucy\Desktop\java\2025..2.26_網頁設計\小專3(含bootstrap)>
+終端機 npm restart
+
+3.若都沒動可能要重裝node
