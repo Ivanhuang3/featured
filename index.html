@@ -19,10 +19,12 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link" href="#home">首頁</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#products">產品</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#about">關於我們</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#contact">聯繫我們</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.html">首頁</a></li>
+                        <li class="nav-item"><a class="nav-link" href="products.html">產品</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.html">關於我們</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">聯繫我們</a></li>
+                        <li class="nav-item"><a class="nav-link" href="cart.html">購物車 (<span id="cart-count">0</span>)</a></li>
+                        <li class="nav-item"><a class="nav-link" href="orders.html">訂單查詢</a></li> <!-- 新增 -->
                     </ul>
                     <div class="lang-switch me-3">
                         <button class="btn btn-outline-light me-2" onclick="switchLanguage('zh')">中文</button>
@@ -90,8 +92,6 @@
                     </a>
                     <div class="card-body">
                         <a href="vegetable.html" target="_blank" class="card-text text-decoration-none" id="product-vegetable">蔬果</a>
-                        <!-- <p class="card-text">NT$500</p> -->
-                        <!-- <button class="btn btn-primary add-to-cart" data-product-id="vegetable" data-name="蔬果" data-price="500" data-image="product1.jpg">加入購物車</button> -->
                     </div>
                 </div>
             </div>
@@ -102,8 +102,6 @@
                     </a>
                     <div class="card-body">
                         <a href="meet.html" target="_blank" class="card-text text-decoration-none" id="product-meat">肉類</a>
-                        <!-- <p class="card-text">NT$800</p> -->
-                        <!-- <button class="btn btn-primary add-to-cart" data-product-id="meat" data-name="肉類" data-price="800" data-image="product2.jpg">加入購物車</button> -->
                     </div>
                 </div>
             </div>
@@ -125,29 +123,29 @@
         </div>
     </section>
 
-   <!-- 聯繫我們 -->
-   <section id="contact" class="container my-5">
-    <h2 class="text-center mb-4" id="contact-title">聯繫我們</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form id="contact-form">
-                <div class="mb-3">
-                    <label for="contact-name" class="form-label" id="contact-name-label">姓名</label>
-                    <input type="text" class="form-control" id="contact-name" placeholder="請輸入您的姓名" required>
-                </div>
-                <div class="mb-3">
-                    <label for="contact-email" class="form-label" id="contact-email-label">電子郵件</label>
-                    <input type="email" class="form-control" id="contact-email" placeholder="請輸入您的電子郵件" required>
-                </div>
-                <div class="mb-3">
-                    <label for="contact-message" class="form-label" id="contact-message-label">留言</label>
-                    <textarea class="form-control" id="contact-message" rows="4" placeholder="請輸入您的留言" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100" id="contact-submit">送出</button>
-            </form>
+    <!-- 聯繫我們 -->
+    <section id="contact" class="container my-5">
+        <h2 class="text-center mb-4" id="contact-title">聯繫我們</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="contact-form">
+                    <div class="mb-3">
+                        <label for="contact-name" class="form-label" id="contact-name-label">姓名</label>
+                        <input type="text" class="form-control" id="contact-name" placeholder="請輸入您的姓名" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact-email" class="form-label" id="contact-email-label">電子郵件</label>
+                        <input type="email" class="form-control" id="contact-email" placeholder="請輸入您的電子郵件" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contact-message" class="form-label" id="contact-message-label">留言</label>
+                        <textarea class="form-control" id="contact-message" rows="4" placeholder="請輸入您的留言" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" id="contact-submit">送出</button>
+                </form>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- 底部 -->
     <footer class="bg-dark text-white text-center py-4">

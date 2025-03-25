@@ -29,6 +29,9 @@ function switchLanguage(lang) {
             checkoutAddressLabel: '配送地址',
             checkoutPaymentLabel: '支付方式',
             checkoutSubmit: '確認訂單',
+            queryTitle: '訂單查詢',
+            queryPhoneLabel: '電話號碼',
+            querySubmit: '查詢',
             contactInfo: '合作詢問: saucyking3@gmail.com',
             copyright: '© 2025 蔬果肉鋪'
         },
@@ -60,6 +63,9 @@ function switchLanguage(lang) {
             checkoutAddressLabel: 'Delivery Address',
             checkoutPaymentLabel: 'Payment Method',
             checkoutSubmit: 'Confirm Order',
+            queryTitle: 'Order Query',
+            queryPhoneLabel: 'Phone Number',
+            querySubmit: 'Query',
             contactInfo: 'Contact: saucyking3@gmail.com',
             copyright: '© 2025 Vegetable & Meat Shop'
         }
@@ -122,6 +128,14 @@ function switchLanguage(lang) {
     if (checkoutAddressLabel) checkoutAddressLabel.textContent = translations[lang].checkoutAddressLabel;
     if (checkoutPaymentLabel) checkoutPaymentLabel.textContent = translations[lang].checkoutPaymentLabel;
     if (checkoutSubmit) checkoutSubmit.textContent = translations[lang].checkoutSubmit;
+
+    // 訂單查詢頁面
+    const queryTitle = document.getElementById('query-title');
+    const queryPhoneLabel = document.getElementById('query-phone-label');
+    const querySubmit = document.getElementById('query-submit');
+    if (queryTitle) queryTitle.textContent = translations[lang].queryTitle;
+    if (queryPhoneLabel) queryPhoneLabel.textContent = translations[lang].queryPhoneLabel;
+    if (querySubmit) querySubmit.textContent = translations[lang].querySubmit;
 
     document.getElementById('contact-info').textContent = translations[lang].contactInfo;
     document.getElementById('copyright').textContent = translations[lang].copyright;
@@ -248,8 +262,10 @@ async function handleCheckoutSubmit(event) {
         timestamp: new Date().toISOString()
     };
 
+    console.log('提交訂單:', order); // 添加日誌
+
     try {
-        const response = await fetch('http://localhost:3000/orders', {
+        const response = await fetch('/api/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -257,12 +273,16 @@ async function handleCheckoutSubmit(event) {
             body: JSON.stringify(order)
         });
 
+        console.log('後端回應狀態:', response.status); // 添加日誌
+        const responseData = await response.json();
+        console.log('後端回應數據:', responseData); // 添加日誌
+
         if (response.ok) {
             clearCart();
             alert('訂單已成功提交！感謝您的購買！');
             window.location.href = 'index.html';
         } else {
-            throw new Error('提交訂單失敗');
+            throw new Error(`提交訂單失敗，狀態碼: ${response.status}`);
         }
     } catch (error) {
         console.error('錯誤:', error);
@@ -286,7 +306,7 @@ async function handleContactSubmit(event) {
     };
 
     try {
-        const response = await fetch('http://localhost:3000/contacts', {
+        const response = await fetch('/api/contacts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -303,6 +323,79 @@ async function handleContactSubmit(event) {
     } catch (error) {
         console.error('錯誤:', error);
         alert('提交留言時發生錯誤，請稍後再試！');
+    }
+}
+
+// 處理訂單查詢
+async function handleOrderQuery(event) {
+    event.preventDefault();
+    const phone = document.getElementById('query-phone').value.replace(/\D/g, ''); // 移除非數字字符
+    const orderResults = document.getElementById('order-results');
+
+    console.log('查詢電話號碼:', phone); // 添加日誌
+
+    if (!phone) {
+        orderResults.innerHTML = '<p class="text-center text-danger">請輸入電話號碼！</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/orders', { // 查詢所有訂單，然後前端過濾
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('後端回應狀態:', response.status);
+
+        if (response.ok) {
+            const orders = await response.json();
+            console.log('後端返回的所有訂單數據:', orders);
+
+            // 在前端過濾電話號碼（支援模糊查詢）
+            const filteredOrders = orders.filter(order => order.customer.phone.includes(phone));
+            console.log('過濾後的訂單:', filteredOrders);
+
+            orderResults.innerHTML = ''; // 清空之前的結果
+
+            if (filteredOrders.length === 0) {
+                orderResults.innerHTML = '<p class="text-center">未找到符合條件的訂單。</p>';
+                return;
+            }
+
+            filteredOrders.forEach(order => {
+                if (!order.customer || !order.customer.phone) {
+                    console.error('訂單數據格式錯誤:', order);
+                    return;
+                }
+                const orderElement = document.createElement('div');
+                orderElement.classList.add('col');
+                orderElement.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">訂單 ID: ${order.id}</h5>
+                            <p class="card-text">顧客姓名: ${order.customer.name}</p>
+                            <p class="card-text">電話: ${order.customer.phone}</p>
+                            <p class="card-text">地址: ${order.customer.address}</p>
+                            <p class="card-text">支付方式: ${order.paymentMethod}</p>
+                            <p class="card-text">總金額: NT$${order.total}</p>
+                            <p class="card-text">訂單時間: ${new Date(order.timestamp).toLocaleString()}</p>
+                            <h6>訂單項目:</h6>
+                            <ul>
+                                ${order.items.map(item => `<li>${item.name} - NT$${item.price} x ${item.quantity}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                orderResults.appendChild(orderElement);
+            });
+        } else {
+            throw new Error(`查詢訂單失敗，狀態碼: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('錯誤:', error);
+        orderResults.innerHTML = '<p class="text-center text-danger">查詢訂單時發生錯誤，請稍後再試！</p>';
     }
 }
 
@@ -334,4 +427,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
+
+    // 添加訂單查詢表單的監聽
+    const orderQueryForm = document.getElementById('order-query-form');
+    if (orderQueryForm) {
+        orderQueryForm.addEventListener('submit', handleOrderQuery);
+    }
+
+    // 初始化語言（預設為中文）
+    switchLanguage('zh');
 });
